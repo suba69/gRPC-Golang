@@ -1,0 +1,119 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package auth;
+
+option go_package = "/.proto";
+
+service AuthService {
+    rpc RegisterUser (RegisterUserRequest) returns (RegisterUserResponse);
+    rpc LoginUser (LoginUserRequest) returns (LoginUserResponse);
+    rpc Logout (LogoutUserRequest) returns (LogoutUserResponse);
+    rpc GetAdminUsers (GetAdminUsersRequest) returns (GetAdminUsersResponse);
+    rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
+    rpc AddBalance (AddBalanceRequest) returns (AddBalanceResponse);
+    rpc CheckBalance (CheckBalanceRequest) returns (CheckBalanceResponse);
+    rpc GetUserProfile (UserProfileRequest) returns (UserProfileResponse);
+    rpc GetBanks (GetBanksRequest) returns (GetBanksResponse);
+}
+
+message AuthorizationRequest {
+    string refreshToken = 1;
+  }
+
+message AuthorizationResponse {
+    string accessToken = 1;
+  }
+
+message AuthRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message AuthResponse {
+    bool authenticated = 1;
+}
+
+message RegisterUserRequest {
+    string username = 1;
+    string password = 2;
+    string role = 3;
+}
+
+message RegisterUserResponse {
+    string message = 1;
+    string token = 2;
+    string refreshToken = 3;
+}
+
+message LoginUserRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message LoginUserResponse {
+    string message = 1;
+    string token = 2;
+    string refreshToken = 3;
+}
+
+message AddBalanceRequest {
+    double amount = 1;
+}
+
+message AddBalanceResponse {
+    string message = 1;
+}
+
+message CheckBalanceRequest {
+    string username = 1;
+}
+
+message CheckBalanceResponse {
+    double balance = 1;
+}
+
+message UserProfileRequest {}
+
+message UserProfileResponse {
+    string username = 1;
+    string role = 2;
+    double balance = 3;
+    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp deleted_at = 5;
+}
+
+message LogoutUserRequest {}
+
+message LogoutUserResponse {
+    string message = 1;
+}
+
+message GetAdminUsersRequest{}
+
+message GetAdminUsersResponse {
+    repeated string users = 1;
+}
+
+message DeleteUserRequest {
+    string username = 1;
+}
+
+message DeleteUserResponse {
+    string message = 1;
+}
+
+message GetBanksRequest {
+    string bankName = 1;
+}
+
+message GetBanksResponse {
+    repeated Bank banks = 1;
+}
+
+message Bank {
+    string name = 1;
+    string link = 2;
+    string street = 3;
+}
