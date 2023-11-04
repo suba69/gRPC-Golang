@@ -126,7 +126,7 @@ func (s *AuthService) GetAdminUsers(ctx context.Context, req *pb.GetAdminUsersRe
 	}
 
 	if role != "admin" {
-		return nil, fmt.Errorf("недостаточно прав для доступа к методу")
+		return nil, fmt.Errorf("недостаточно прав")
 	}
 
 	users, err := db_connect.GetAdminUsers()
@@ -150,7 +150,7 @@ func (s *AuthService) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest)
 	}
 
 	if role != "admin" {
-		return nil, fmt.Errorf("недостаточно прав для удаления пользователя")
+		return nil, fmt.Errorf("недостаточно прав")
 	}
 
 	err = db_connect.DeleteUser(req.Username, db_connect.DbPool)
@@ -167,25 +167,25 @@ func (s *AuthService) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest)
 func isAuthenticated(username, password, role string) bool {
 	exists, err := db_connect.UserExists(username, db_connect.DbPool)
 	if err != nil {
-		log.Printf("Error checking user existence: %v", err)
+		log.Printf("Ошибка проверки существования пользователя: %v", err)
 		return false
 	}
 
 	if !exists {
-		log.Printf("User not found: %s", username)
+		log.Printf("Пользователь не найден: %s", username)
 		return false
 	}
 
 	var passwordHash string
 	err = db_connect.DbPool.QueryRow(context.Background(), "SELECT password FROM users WHERE username = $1", username).Scan(&passwordHash)
 	if err != nil {
-		log.Printf("Error getting user password hash: %v", err)
+		log.Printf("Ошибка получения хеша пароля пользователя.: %v", err)
 		return false
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(passwordHash), []byte(password))
 	if err != nil {
-		log.Printf("Password mismatch for user: %s", username)
+		log.Printf("Пароли не совпадают: %s", username)
 		return false
 	}
 
