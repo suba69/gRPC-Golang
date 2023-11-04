@@ -64,7 +64,6 @@ func ParseToken(refreshToken string) (string, string, error) {
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		username, usernameFound := claims["username"].(string)
 		role, roleFound := claims["role"].(string)
-
 		if !usernameFound || !roleFound {
 			return "", "", fmt.Errorf("имя пользователя или роль не найдены в Refresh-токене")
 		}
@@ -165,6 +164,8 @@ func (s *AuthService) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest)
 }
 
 func isAuthenticated(username, password, role string) bool {
+	var passwordHash string
+
 	exists, err := db_connect.UserExists(username, db_connect.DbPool)
 	if err != nil {
 		log.Printf("Ошибка проверки существования пользователя: %v", err)
@@ -176,7 +177,6 @@ func isAuthenticated(username, password, role string) bool {
 		return false
 	}
 
-	var passwordHash string
 	err = db_connect.DbPool.QueryRow(context.Background(), "SELECT password FROM users WHERE username = $1", username).Scan(&passwordHash)
 	if err != nil {
 		log.Printf("Ошибка получения хеша пароля пользователя.: %v", err)
