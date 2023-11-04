@@ -117,7 +117,7 @@ func (s *AuthService) RegisterUser(ctx context.Context, req *pb.RegisterUserRequ
 
 func (s *AuthService) GetAdminUsers(ctx context.Context, req *pb.GetAdminUsersRequest) (*pb.GetAdminUsersResponse, error) {
 	if s.RefreshToken == "" {
-		return nil, fmt.Errorf("refresh-токен отсутствует")
+		return nil, fmt.Errorf("пожалуйста зарегестируйтесь или войдите в аккаунт")
 	}
 
 	_, role, err := ParseToken(s.RefreshToken)
@@ -141,7 +141,7 @@ func (s *AuthService) GetAdminUsers(ctx context.Context, req *pb.GetAdminUsersRe
 
 func (s *AuthService) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
 	if s.RefreshToken == "" {
-		return nil, fmt.Errorf("refresh-токен отсутствует")
+		return nil, fmt.Errorf("пожалуйста зарегестируйтесь или войдите в аккаунт")
 	}
 
 	_, role, err := ParseToken(s.RefreshToken)
@@ -233,7 +233,7 @@ func (s *AuthService) Logout(ctx context.Context, req *pb.LogoutUserRequest) (*p
 
 func (s *AuthService) GetUserProfile(ctx context.Context, req *pb.UserProfileRequest) (*pb.UserProfileResponse, error) {
 	if s.RefreshToken == "" {
-		return nil, fmt.Errorf("refresh-токен отсутствует")
+		return nil, fmt.Errorf("пожалуйста зарегестируйтесь или войдите в аккаунт")
 	}
 
 	md := metadata.New(map[string]string{"refreshToken": s.RefreshToken})
@@ -269,6 +269,10 @@ func (s *AuthService) GetUserProfile(ctx context.Context, req *pb.UserProfileReq
 }
 
 func (s *AuthService) GetBanks(ctx context.Context, req *pb.GetBanksRequest) (*pb.GetBanksResponse, error) {
+	if s.RefreshToken == "" {
+		return nil, fmt.Errorf("пожалуйста зарегестируйтесь или войдите в аккаунт")
+	}
+
 	collection, err := db_connect.GetMongoCollection()
 	if err != nil {
 		return nil, err
@@ -307,12 +311,12 @@ func (s *AuthService) GetBanks(ctx context.Context, req *pb.GetBanksRequest) (*p
 }
 
 func (s *AuthService) AddBalance(ctx context.Context, req *pb.AddBalanceRequest) (*pb.AddBalanceResponse, error) {
-	if req.Amount <= 0 {
-		return nil, fmt.Errorf("некорректная сумма для пополнения баланса")
+	if s.RefreshToken == "" {
+		return nil, fmt.Errorf("пожалуйста зарегестируйтесь или войдите в аккаунт")
 	}
 
-	if s.RefreshToken == "" {
-		return nil, fmt.Errorf("refresh-токен отсутствует")
+	if req.Amount <= 0 {
+		return nil, fmt.Errorf("некорректная сумма для пополнения баланса")
 	}
 
 	md := metadata.New(map[string]string{"refreshToken": s.RefreshToken})
@@ -343,7 +347,7 @@ func (s *AuthService) AddBalance(ctx context.Context, req *pb.AddBalanceRequest)
 func (s *AuthService) CheckBalance(ctx context.Context, req *pb.CheckBalanceRequest) (*pb.CheckBalanceResponse, error) {
 
 	if s.RefreshToken == "" {
-		return nil, fmt.Errorf("refresh-токен отсутствует")
+		return nil, fmt.Errorf("пожалуйста зарегестируйтесь или войдите в аккаунт")
 	}
 
 	md := metadata.New(map[string]string{"refreshToken": s.RefreshToken})
