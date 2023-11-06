@@ -19,7 +19,7 @@ func main() {
 		DB:       0,
 	})
 
-	dbURL := "postgres://postgres:olsap.6699@localhost:5432/grpc-golang"
+	dbURL := "postgresql://postgres:olsap.6699@localhost:5432/grpc-golang"
 
 	DbPool, err := pgxpool.Connect(context.Background(), dbURL)
 	if err != nil {

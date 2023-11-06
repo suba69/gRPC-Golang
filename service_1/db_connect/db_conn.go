@@ -12,7 +12,7 @@ import (
 var DbPool *pgxpool.Pool
 
 func ConnectToDatabase() (*pgxpool.Pool, error) {
-	dbURL := "postgres://postgres:olsap.6699@localhost:5432/grpc-golang"
+	dbURL := "postgresql://postgres:olsap.6699@localhost:5432/grpc-golang"
 	DbPool, err := pgxpool.Connect(context.Background(), dbURL)
 	if err != nil {
 		log.Fatalf("Failed to connect to the database: %v", err)
