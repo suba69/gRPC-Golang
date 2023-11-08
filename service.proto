@@ -13,6 +13,7 @@ service AuthService {
     rpc GetAdminUsers (GetAdminUsersRequest) returns (GetAdminUsersResponse);
     rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
     rpc AddBalance (AddBalanceRequest) returns (AddBalanceResponse);
+    rpc WithdrawBalance(WithdrawBalanceRequest) returns (WithdrawBalanceResponse);
     rpc CheckBalance (CheckBalanceRequest) returns (CheckBalanceResponse);
     rpc GetUserProfile (UserProfileRequest) returns (UserProfileResponse);
     rpc GetBanks (GetBanksRequest) returns (GetBanksResponse);
@@ -63,6 +64,14 @@ message AddBalanceRequest {
 }
 
 message AddBalanceResponse {
+    string message = 1;
+}
+
+message WithdrawBalanceRequest {
+    double amount = 1;
+}
+  
+message WithdrawBalanceResponse {
     string message = 1;
 }
 

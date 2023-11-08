@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v4.25.0--rc2
-// source: service_1/service_1.proto
+// source: service.proto
 
 package __proto
 
@@ -28,6 +28,7 @@ type AuthServiceClient interface {
 	GetAdminUsers(ctx context.Context, in *GetAdminUsersRequest, opts ...grpc.CallOption) (*GetAdminUsersResponse, error)
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
 	AddBalance(ctx context.Context, in *AddBalanceRequest, opts ...grpc.CallOption) (*AddBalanceResponse, error)
+	WithdrawBalance(ctx context.Context, in *WithdrawBalanceRequest, opts ...grpc.CallOption) (*WithdrawBalanceResponse, error)
 	CheckBalance(ctx context.Context, in *CheckBalanceRequest, opts ...grpc.CallOption) (*CheckBalanceResponse, error)
 	GetUserProfile(ctx context.Context, in *UserProfileRequest, opts ...grpc.CallOption) (*UserProfileResponse, error)
 	GetBanks(ctx context.Context, in *GetBanksRequest, opts ...grpc.CallOption) (*GetBanksResponse, error)
@@ -95,6 +96,15 @@ func (c *authServiceClient) AddBalance(ctx context.Context, in *AddBalanceReques
 	return out, nil
 }
 
+func (c *authServiceClient) WithdrawBalance(ctx context.Context, in *WithdrawBalanceRequest, opts ...grpc.CallOption) (*WithdrawBalanceResponse, error) {
+	out := new(WithdrawBalanceResponse)
+	err := c.cc.Invoke(ctx, "/auth.AuthService/WithdrawBalance", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *authServiceClient) CheckBalance(ctx context.Context, in *CheckBalanceRequest, opts ...grpc.CallOption) (*CheckBalanceResponse, error) {
 	out := new(CheckBalanceResponse)
 	err := c.cc.Invoke(ctx, "/auth.AuthService/CheckBalance", in, out, opts...)
@@ -132,6 +142,7 @@ type AuthServiceServer interface {
 	GetAdminUsers(context.Context, *GetAdminUsersRequest) (*GetAdminUsersResponse, error)
 	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
 	AddBalance(context.Context, *AddBalanceRequest) (*AddBalanceResponse, error)
+	WithdrawBalance(context.Context, *WithdrawBalanceRequest) (*WithdrawBalanceResponse, error)
 	CheckBalance(context.Context, *CheckBalanceRequest) (*CheckBalanceResponse, error)
 	GetUserProfile(context.Context, *UserProfileRequest) (*UserProfileResponse, error)
 	GetBanks(context.Context, *GetBanksRequest) (*GetBanksResponse, error)
@@ -159,6 +170,9 @@ func (UnimplementedAuthServiceServer) DeleteUser(context.Context, *DeleteUserReq
 }
 func (UnimplementedAuthServiceServer) AddBalance(context.Context, *AddBalanceRequest) (*AddBalanceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddBalance not implemented")
+}
+func (UnimplementedAuthServiceServer) WithdrawBalance(context.Context, *WithdrawBalanceRequest) (*WithdrawBalanceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WithdrawBalance not implemented")
 }
 func (UnimplementedAuthServiceServer) CheckBalance(context.Context, *CheckBalanceRequest) (*CheckBalanceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckBalance not implemented")
@@ -290,6 +304,24 @@ func _AuthService_AddBalance_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_WithdrawBalance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WithdrawBalanceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).WithdrawBalance(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/auth.AuthService/WithdrawBalance",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).WithdrawBalance(ctx, req.(*WithdrawBalanceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AuthService_CheckBalance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CheckBalanceRequest)
 	if err := dec(in); err != nil {
@@ -376,6 +408,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AuthService_AddBalance_Handler,
 		},
 		{
+			MethodName: "WithdrawBalance",
+			Handler:    _AuthService_WithdrawBalance_Handler,
+		},
+		{
 			MethodName: "CheckBalance",
 			Handler:    _AuthService_CheckBalance_Handler,
 		},
@@ -389,5 +425,5 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "service_1/service_1.proto",
+	Metadata: "service.proto",
 }
