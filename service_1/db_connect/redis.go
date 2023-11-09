@@ -1,9 +1,10 @@
+// db_connect/db_connect.go
+
 package db_connect
 
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -12,58 +13,29 @@ import (
 
 var ctx = context.Background()
 
-func ConnectToRedis() {
+func ConnectToRedis() (*redis.Client, error) {
 	redisClient := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "",
 		DB:       0,
 	})
 
-	defer redisClient.Close()
+	return redisClient, nil
+}
 
-	dbURL := "postgresql://postgres:olsap.6699@localhost:5433/grpc-golang"
-
-	DbPool, err := pgxpool.Connect(context.Background(), dbURL)
+func UpdateDataInRedis(redisClient *redis.Client, key string) error {
+	data, err := getAllDataFromPostgreSQL(DbPool)
 	if err != nil {
-		fmt.Println("Ошибка при подключении к базе данных:", err)
-		return
+		return err
 	}
 
-	key := "cached_data"
-
-	cachedData, err := redisClient.Get(ctx, key).Result()
-	if err == nil {
-		var dataFromSource []string
-		if err := json.Unmarshal([]byte(cachedData), &dataFromSource); err != nil {
-			fmt.Println("Ошибка при декодировании данных из Redis:", err)
-			return
-		}
-		fmt.Println("Данные из Redis-кеша:", dataFromSource)
-	} else if err == redis.Nil {
-		fmt.Println("Данные отсутствуют в Redis-кеше")
-
-		dataFromSource, err := getAllDataFromPostgreSQL(DbPool)
-		if err != nil {
-			fmt.Println("Ошибка при получении данных из PostgreSQL:", err)
-			return
-		}
-
-		dataToCache, err := json.Marshal(dataFromSource)
-		if err != nil {
-			fmt.Println("Ошибка при сериализации данных для кеширования:", err)
-			return
-		}
-
-		err = redisClient.Set(ctx, key, dataToCache, 1*time.Minute).Err()
-
-		if err != nil {
-			fmt.Println("Ошибка при сохранении данных в Redis-кеш:", err)
-		} else {
-			fmt.Println("Данные сохранены в Redis-кеше:", dataFromSource)
-		}
-	} else {
-		fmt.Println("Ошибка при получении данных из Redis:", err)
+	dataToCache, err := json.Marshal(data)
+	if err != nil {
+		return err
 	}
+
+	err = redisClient.Set(ctx, key, dataToCache, 1*time.Minute).Err()
+	return err
 }
 
 func getAllDataFromPostgreSQL(DbPool *pgxpool.Pool) ([]string, error) {
@@ -89,5 +61,6 @@ func getAllDataFromPostgreSQL(DbPool *pgxpool.Pool) ([]string, error) {
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
+
 	return data, nil
 }

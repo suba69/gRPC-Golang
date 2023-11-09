@@ -319,6 +319,10 @@ func (s *AuthService) AddBalance(ctx context.Context, req *pb.AddBalanceRequest)
 		return nil, fmt.Errorf("некорректная сумма для пополнения баланса")
 	}
 
+	if req.Amount > 100000000 {
+		return nil, fmt.Errorf("сумма пополнения превышает максимально допустимое значение")
+	}
+
 	md := metadata.New(map[string]string{"refreshToken": s.RefreshToken})
 	_ = metadata.NewOutgoingContext(ctx, md)
 
