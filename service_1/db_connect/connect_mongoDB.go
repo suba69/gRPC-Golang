@@ -12,7 +12,7 @@ import (
 var mongoCollection *mongo.Collection
 
 func InitializeMongoCollection() error {
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:27024")
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
 		log.Printf("Ошибка подключения к MongoDB: %v", err)

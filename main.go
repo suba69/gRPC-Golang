@@ -7,7 +7,7 @@ import (
 	"log"
 	"net"
 
-	createuser "grpc-microservices/service_1/create_user"
+	createuser "grpc-microservices/service_1/user_service"
 
 	"google.golang.org/grpc"
 )

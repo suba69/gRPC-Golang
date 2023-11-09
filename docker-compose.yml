@@ -33,7 +33,7 @@ services:
     container_name: mongodb_container
     image: mongo:latest
     ports:
-      - "27017:27017"
+      - "27024:27017"
     restart: unless-stopped
 
   app:

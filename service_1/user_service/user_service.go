@@ -294,9 +294,9 @@ func (s *AuthService) GetBanks(ctx context.Context, req *pb.GetBanksRequest) (*p
 			return nil, err
 		}
 		bankList = append(bankList, &pb.Bank{
-			Name:   bank.Name,
-			Link:   bank.Link,
-			Street: bank.Street,
+			Name:    bank.Name,
+			Link:    bank.Link,
+			Address: bank.Address,
 		})
 	}
 
