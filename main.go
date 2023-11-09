@@ -7,10 +7,14 @@ import (
 	"log"
 	"net"
 
+	"github.com/jackc/pgx/v4/pgxpool"
+
 	createuser "grpc-microservices/service_1/user_service"
 
 	"google.golang.org/grpc"
 )
+
+var DbPool *pgxpool.Pool
 
 func main() {
 	var err error
@@ -31,6 +35,8 @@ func main() {
 		log.Fatalf("Failed to initialize MongoDB collection: %v", err)
 		return
 	}
+
+	db_connect.ConnectToRedis()
 
 	server := grpc.NewServer()
 	authService := &createuser.AuthService{}
