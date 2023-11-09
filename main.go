@@ -6,7 +6,6 @@ import (
 	"grpc-microservices/service_1/db_connect"
 	"log"
 	"net"
-	"sync"
 	"time"
 
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -50,22 +49,17 @@ func main() {
 		return
 	}
 
-	var wg sync.WaitGroup
-	wg.Add(1)
+	ticker := time.NewTicker(1 * time.Second)
+	defer ticker.Stop()
 
 	go func() {
-		defer wg.Done()
-
-		for {
-			time.Sleep(1 * time.Second)
+		for range ticker.C {
 			err := db_connect.UpdateDataInRedis(redisClient, "cached_data")
 			if err != nil {
 				fmt.Printf("Ошибка обновлений в Redis: %v\n", err)
 			}
 		}
 	}()
-
-	wg.Wait()
 
 	server := grpc.NewServer()
 	authService := &createuser.AuthService{}
