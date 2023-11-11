@@ -1,5 +1,3 @@
-// db_connect/db_connect.go
-
 package db_connect
 
 import (
