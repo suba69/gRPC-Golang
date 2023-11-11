@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	pb "grpc-microservices/.proto"
-	"grpc-microservices/service_1/db_connect"
+	"grpc-microservices/service/db_connect"
 	"log"
 	"strings"
 	"time"

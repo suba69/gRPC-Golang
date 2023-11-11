@@ -3,14 +3,14 @@ package main
 import (
 	"fmt"
 	pb "grpc-microservices/.proto"
-	"grpc-microservices/service_1/db_connect"
+	"grpc-microservices/service/db_connect"
 	"log"
 	"net"
 	"time"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 
-	createuser "grpc-microservices/service_1/user_service"
+	createuser "grpc-microservices/service/user_service"
 
 	"google.golang.org/grpc"
 )

@@ -10,7 +10,7 @@ services:
     ports:
       - "5433:5432"
     restart: unless-stopped
-    
+
   redis:
     container_name: redis_container
     image: redis:latest
@@ -33,3 +33,5 @@ services:
      - "8081:8080"
     depends_on:
       - postgres
+      - redis
+      - mongodb
